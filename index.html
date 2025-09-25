@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -248,39 +248,39 @@
             isLoading: false
         };
 
-        function loadAds() {
-            // This function now forces the ad scripts to reload by adding a unique timestamp
-            const timestamp = new Date().getTime();
-
+        function loadTopAd() {
             const topAdContainer = document.getElementById('top-ad-container');
+            if (!topAdContainer) return;
+
+            topAdContainer.innerHTML = '';
+
+            // --- Load Top Ad ---
+            const script1 = document.createElement('script');
+            script1.type = 'text/javascript';
+            script1.text = `
+                atOptions = {
+                    'key' : '5c26d225443c32c8be7e4d4794da2306',
+                    'format' : 'iframe',
+                    'height' : 50,
+                    'width' : 320,
+                    'params' : {}
+                };
+            `;
+            topAdContainer.appendChild(script1);
+
+            const script2 = document.createElement('script');
+            script2.type = 'text/javascript';
+            script2.src = `//www.highperformanceformat.com/5c26d225443c32c8be7e4d4794da2306/invoke.js`;
+            topAdContainer.appendChild(script2);
+        }
+
+        function loadBottomAds() {
             const bottomAdContainer1 = document.getElementById('bottom-ad-container-1');
             const bottomAdContainer2 = document.getElementById('bottom-ad-container-2');
 
-            if (topAdContainer) topAdContainer.innerHTML = '';
             if (bottomAdContainer1) bottomAdContainer1.innerHTML = '';
             if (bottomAdContainer2) bottomAdContainer2.innerHTML = '';
-
-            // --- Load Top Ad ---
-            if (topAdContainer) {
-                const script1 = document.createElement('script');
-                script1.type = 'text/javascript';
-                script1.text = `
-                    atOptions = {
-                        'key' : '5c26d225443c32c8be7e4d4794da2306',
-                        'format' : 'iframe',
-                        'height' : 50,
-                        'width' : 320,
-                        'params' : {}
-                    };
-                `;
-                topAdContainer.appendChild(script1);
-
-                const script2 = document.createElement('script');
-                script2.type = 'text/javascript';
-                script2.src = `//www.highperformanceformat.com/5c26d225443c32c8be7e4d4794da2306/invoke.js?v=${timestamp}`;
-                topAdContainer.appendChild(script2);
-            }
-
+            
             // --- Load Bottom Ad 1 ---
             if (bottomAdContainer1) {
                 const adDiv = document.createElement('div');
@@ -290,7 +290,7 @@
                 const script = document.createElement('script');
                 script.async = true;
                 script.dataset.cfasync = false;
-                script.src = `//pl27715069.revenuecpmgate.com/4f732ee1f4ff882b0eb0b80305345518/invoke.js?v=${timestamp}`;
+                script.src = `//pl27715069.revenuecpmgate.com/4f732ee1f4ff882b0eb0b80305345518/invoke.js`;
                 bottomAdContainer1.appendChild(script);
             }
 
@@ -298,7 +298,7 @@
             if (bottomAdContainer2) {
                 const script = document.createElement('script');
                 script.type = 'text/javascript';
-                script.src = `//pl27719049.revenuecpmgate.com/28/5b/17/285b179a86cfa041497a6e86bced8de2.js?v=${timestamp}`;
+                script.src = `//pl27719049.revenuecpmgate.com/28/5b/17/285b179a86cfa041497a6e86bced8de2.js`;
                 bottomAdContainer2.appendChild(script);
             }
         }
@@ -333,8 +333,7 @@
             const countInfo = document.getElementById('proxy-count-info');
             container.innerHTML = '';
             
-            // Reload ads every time the list is rendered (e.g., page change, search)
-            loadAds();
+            loadTopAd();
 
             if (state.filteredProxyList.length === 0) {
                 container.innerHTML = '<p class="text-center">No proxies found.</p>';
@@ -485,7 +484,7 @@
         }
         
         function handleProxySelect(index) {
-            loadAds(); // Reload ads when a proxy is selected
+            loadTopAd(); 
             document.querySelectorAll('.proxy-item').forEach(item => {
                 item.classList.remove('selected');
             });
@@ -599,15 +598,16 @@
                 }
 
                 generateUUID();
+                loadBottomAds(); // Load bottom ads only once on initialization
 
                 document.getElementById('generate-uuid-btn').addEventListener('click', generateUUID);
                 document.getElementById('back-to-list').addEventListener('click', () => {
                     showSection('proxy-list');
-                    loadAds();
+                    loadTopAd();
                 });
                 document.getElementById('create-new').addEventListener('click', () => {
                      showSection('proxy-list');
-                     loadAds();
+                     loadTopAd();
                 });
                 document.getElementById('copy-url-tls').addEventListener('click', () => handleCopyUrl('tls'));
                 document.getElementById('copy-url-nontls').addEventListener('click', () => handleCopyUrl('nontls'));
@@ -621,7 +621,9 @@
                     createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
                     
                     setTimeout(() => {
-                        createVlessUrls();
+                        if (createVlessUrls()) {
+                            loadTopAd(); // also reload top ad on success
+                        }
                         createBtn.disabled = false;
                         createBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Create VLESS Link';
                     }, 100);
