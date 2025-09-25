@@ -28,8 +28,8 @@
             color: var(--text-primary);
             padding: 1rem;
             display: flex;
-            flex-direction: column; /* Changed to column for ads layout */
-            align-items: center; /* Center content horizontally */
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
         }
         .container { 
@@ -52,16 +52,12 @@
             margin-bottom: 1.5rem;
             min-height: 50px;
         }
-        /* Styles for bottom ads container (outside the main container) */
         .bottom-ad-wrapper {
             width: 100%;
             margin-top: 1.5rem;
             display: flex;
-            flex-direction: row; /* Ads side-by-side */
-            flex-wrap: wrap; /* Allow wrapping if needed */
-            justify-content: center; /* Center ads horizontally */
+            justify-content: center;
             align-items: center;
-            gap: 1rem;
         }
         h1, h2, h3 { color: var(--text-primary); }
         h1 { font-size: 1.5rem; text-align: center; margin-bottom: 0.25rem; }
@@ -225,12 +221,13 @@
         </div>
     </div>
 
-    <!-- Bottom Ads Wrapper (Outside the main container for full width) -->
+    <!-- Bottom Ad Wrapper (for the single banner ad) -->
     <div class="bottom-ad-wrapper">
         <div id="bottom-ad-container-1"></div>
-        <div id="bottom-ad-container-2"></div>
     </div>
-
+    
+    <!-- The second ad script is loaded here, without a container -->
+    <script type='text/javascript' src='//pl27719049.revenuecpmgate.com/28/5b/17/285b179a86cfa041497a6e86bced8de2.js'></script>
 
     <script>
         const config = {
@@ -254,7 +251,6 @@
 
             topAdContainer.innerHTML = '';
 
-            // --- Load Top Ad ---
             const script1 = document.createElement('script');
             script1.type = 'text/javascript';
             script1.text = `
@@ -274,33 +270,21 @@
             topAdContainer.appendChild(script2);
         }
 
-        function loadBottomAds() {
+        function loadBottomBannerAd() {
             const bottomAdContainer1 = document.getElementById('bottom-ad-container-1');
-            const bottomAdContainer2 = document.getElementById('bottom-ad-container-2');
+            if (!bottomAdContainer1) return;
 
-            if (bottomAdContainer1) bottomAdContainer1.innerHTML = '';
-            if (bottomAdContainer2) bottomAdContainer2.innerHTML = '';
+            bottomAdContainer1.innerHTML = '';
             
-            // --- Load Bottom Ad 1 ---
-            if (bottomAdContainer1) {
-                const adDiv = document.createElement('div');
-                adDiv.id = 'container-4f732ee1f4ff882b0eb0b80305345518';
-                bottomAdContainer1.appendChild(adDiv);
+            const adDiv = document.createElement('div');
+            adDiv.id = 'container-4f732ee1f4ff882b0eb0b80305345518';
+            bottomAdContainer1.appendChild(adDiv);
 
-                const script = document.createElement('script');
-                script.async = true;
-                script.dataset.cfasync = false;
-                script.src = `//pl27715069.revenuecpmgate.com/4f732ee1f4ff882b0eb0b80305345518/invoke.js`;
-                bottomAdContainer1.appendChild(script);
-            }
-
-            // --- Load Bottom Ad 2 ---
-            if (bottomAdContainer2) {
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = `//pl27719049.revenuecpmgate.com/28/5b/17/285b179a86cfa041497a6e86bced8de2.js`;
-                bottomAdContainer2.appendChild(script);
-            }
+            const script = document.createElement('script');
+            script.async = true;
+            script.dataset.cfasync = false;
+            script.src = `//pl27715069.revenuecpmgate.com/4f732ee1f4ff882b0eb0b80305345518/invoke.js`;
+            bottomAdContainer1.appendChild(script);
         }
 
         function generateUUIDv4() {
@@ -326,7 +310,6 @@
             const sectionToShowEl = document.getElementById(sectionToShow + '-section');
             if (sectionToShowEl) sectionToShowEl.classList.remove('hidden');
         }
-
 
         function renderProxyList() {
             const container = document.getElementById('proxy-list-container');
@@ -507,19 +490,8 @@
             const uuid = document.getElementById('vless-uuid').value.trim();
             const serverDomain = document.getElementById('vless-server-domain').value;
             
-            if (!uuid) {
-                console.warn("UUID cannot be empty!");
-                return false;
-            }
-            
-            if (!serverDomain) {
-                console.warn("Server domain must be selected!");
-                return false;
-            }
-            
-            if (!state.selectedProxy) {
-                console.warn("Proxy not selected! Please select a proxy first.");
-                showSection('proxy-list');
+            if (!uuid || !serverDomain || !state.selectedProxy) {
+                console.warn("Form is not complete.");
                 return false;
             }
 
@@ -535,7 +507,6 @@
             document.getElementById('connection-url-tls').textContent = tlsUrl;
             document.getElementById('connection-url-nontls').textContent = nonTlsUrl;
             showSection('result');
-            
             return true;
         }
 
@@ -598,7 +569,7 @@
                 }
 
                 generateUUID();
-                loadBottomAds(); // Load bottom ads only once on initialization
+                loadBottomBannerAd(); // Load bottom banner ad only once
 
                 document.getElementById('generate-uuid-btn').addEventListener('click', generateUUID);
                 document.getElementById('back-to-list').addEventListener('click', () => {
@@ -622,7 +593,7 @@
                     
                     setTimeout(() => {
                         if (createVlessUrls()) {
-                            loadTopAd(); // also reload top ad on success
+                            loadTopAd();
                         }
                         createBtn.disabled = false;
                         createBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Create VLESS Link';
