@@ -3,136 +3,650 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wordle Hints</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <title>Create Vless Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --bg-color: #111827;
+            --card-color: #1f2937;
+            --border-color: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --green-color: #10b981;
+            --red-color: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
-        input[type="date"]::-webkit-calendar-picker-indicator {
+        .container { width: 100%; max-width: 500px; }
+        .card {
+            background-color: var(--card-color);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .top-ad-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            min-height: 50px; /* Reserve space for the ad */
+        }
+        .bottom-ad-container {
+            background-color: var(--card-color);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        h1, h2, h3 { color: var(--text-primary); }
+        h1 { font-size: 1.5rem; text-align: center; margin-bottom: 0.25rem; }
+        .subtitle { font-size: 0.875rem; text-align: center; color: var(--text-secondary); margin-bottom: 2rem; }
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-secondary); }
+        .input, .select {
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input:focus, .select:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); }
+        .input-group { display: flex; }
+        .input-group .input { border-top-right-radius: 0; border-bottom-right-radius: 0; flex-grow: 1; }
+        .input-group .btn { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
             cursor: pointer;
-            filter: invert(0.6) brightness(1);
+            transition: background-color 0.2s;
+            border: none;
+            gap: 0.5rem;
+        }
+        .btn-primary { background-color: var(--accent-color); color: white; width: 100%; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-primary:disabled { background-color: #374151; cursor: not-allowed; }
+        .btn-secondary { background-color: #374151; color: var(--text-primary); }
+        .btn-secondary:hover { background-color: #4b5563; }
+        .hidden { display: none; }
+        .loader { width: 2rem; height: 2rem; border: 3px solid var(--border-color); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 2rem auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #proxy-list-container { max-height: 400px; overflow-y: auto; margin-top: 1rem; padding-right: 0.5rem; }
+        .proxy-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.5rem; background-color: #374151; cursor: pointer; transition: background-color 0.2s; }
+        .proxy-item:hover { background-color: #4b5563; }
+        .proxy-item.selected { background-color: var(--accent-color); }
+        .proxy-info .provider { font-weight: 600; }
+        .proxy-info .details { font-size: 0.75rem; color: var(--text-secondary); }
+        .proxy-status { width: 0.75rem; height: 0.75rem; border-radius: 50%; background-color: var(--text-secondary); flex-shrink: 0; margin-left: 0.75rem; }
+        .proxy-status.active { background-color: var(--green-color); }
+        .proxy-status.dead { background-color: var(--red-color); }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 1rem; }
+        .pagination button { width: 2.25rem; height: 2.25rem; }
+        #result-section .card { margin-top: 1.5rem; }
+        .connection-url { 
+            background-color: var(--bg-color); 
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            word-break: break-all; 
+            font-family: monospace; 
+            font-size: 0.8rem; 
+            margin-bottom: 0.5rem; 
+            border: 1px solid var(--border-color); 
+            min-height: 80px; 
+        }
+        .text-center { text-align: center; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .url-section { margin-bottom: 1.5rem; }
+        .url-section h4 { 
+            font-size: 1rem; 
+            margin-bottom: 0.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem;
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="w-full max-w-md mx-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-            <div class="p-6 sm:p-8">
-                <div class="text-center">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-blue-500 mb-2" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 2C5.12 2 4 3.12 4 4.5v15C4 20.88 5.12 22 6.5 22h11c1.38 0 2.5-1.12 2.5-2.5v-15C20 3.12 18.88 2 17.5 2h-11zm10.5 2c.28 0 .5.22.5.5v15c0 .28-.22.5-.5.5h-11c-.28 0-.5-.22-.5-.5v-15c0-.28.22-.5.5-.5h11zM7 6v2h2V6H7zm4 0v2h2V6h-2zm4 0v2h2V6h-2zM7 10v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2zM7 14v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z"/></svg>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Wordle Word Hints</h1>
-                    <p class="mt-2 text-gray-600 dark:text-gray-400">Select a date to view the Wordle Word.</p>
+    <div class="container">
+        <!-- Top Ad Container -->
+        <div id="top-ad-container" class="top-ad-container"></div>
+        
+        <div class="card">
+            <h1>Create VLESS Free</h1>
+            <p class="subtitle">Free Create Vless</p>
+            <div id="proxy-list-section">
+                <h2><i class="fas fa-server"></i> Select Proxy</h2>
+                 <div class="form-group">
+                     <input type="text" id="search-input" class="input" placeholder="Search provider or country...">
                 </div>
-                <div class="mt-8 space-y-4">
-                    <div>
-                        <label for="date-picker" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Date</label>
-                        <input type="date" id="date-picker" class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 border-2 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:border-blue-500 text-gray-800 dark:text-gray-200">
+                <div id="loading-indicator" class="hidden"><div class="loader"></div></div>
+                <div id="proxy-list-container"></div>
+                <div id="pagination-container" class="pagination"></div>
+                 <p id="proxy-count-info" class="subtitle text-center mt-2"></p>
+            </div>
+
+            <div id="account-creation-section" class="hidden">
+                 <h2><i class="fas fa-user-plus"></i> VLESS Configuration</h2>
+                 <p class="subtitle" style="text-align: left; margin-bottom: 1rem;">Selected proxy: <strong id="selected-proxy-info">-</strong></p>
+
+                <div id="vless-form-container">
+                    <div class="form-group">
+                        <label for="vless-name">Account Name</label>
+                        <input type="text" id="vless-name" class="input" readonly>
                     </div>
-                    <button id="fetch-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900">
-                        Find Word
-                    </button>
+                    <div class="form-group">
+                        <label for="vless-uuid">UUID</label>
+                        <div class="input-group">
+                            <input type="text" id="vless-uuid" class="input">
+                            <button type="button" id="generate-uuid-btn" class="btn btn-secondary"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vless-server-domain">Server Domain</label>
+                        <select id="vless-server-domain" class="select">
+                        </select>
+                    </div>
+                    
+                    <div class="mt-4">
+                         <button type="button" id="create-vless-btn" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Create VLESS Link
+                         </button>
+                         <button type="button" id="back-to-list" class="btn btn-secondary mt-2" style="width: 100%;">
+                            <i class="fas fa-arrow-left"></i> Back to Proxy List
+                         </button>
+                    </div>
                 </div>
             </div>
-            <div id="result-container" class="px-6 sm:px-8 pb-8">
-                 <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center">
-                    <p class="text-gray-500 dark:text-gray-400">The result will be displayed here.</p>
+        </div>
+
+        <div id="result-section" class="hidden">
+            <div class="card">
+                <h2><i class="fas fa-check-circle" style="color: var(--green-color);"></i> VLESS Successfully Created</h2>
+                
+                <div class="url-section">
+                    <h4><i class="fas fa-shield-alt"></i> TLS </h4>
+                    <div id="connection-url-tls" class="connection-url">VLESS TLS will appear here...</div>
+                    <button id="copy-url-tls" class="btn btn-secondary" style="width: 100%;"><i class="far fa-copy"></i> Copy VLESS TLS</button>
+                </div>
+
+                <div class="url-section">
+                    <h4><i class="fas fa-unlock"></i> Non-TLS </h4>
+                    <div id="connection-url-nontls" class="connection-url">VLESS Non-TLS will appear here...</div>
+                    <button id="copy-url-nontls" class="btn btn-secondary" style="width: 100%;"><i class="far fa-copy"></i> Copy VLESS Non-TLS</button>
+                </div>
+                
+                <div class="mt-4">
+                    <button id="create-new" class="btn btn-primary" style="width: 100%;"><i class="fas fa-list"></i> Create Again (Select New Proxy)</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Bottom Ads Container -->
+        <div class="bottom-ad-container">
+            <div id="bottom-ad-container-1"></div>
+            <div id="bottom-ad-container-2"></div>
         </div>
     </div>
 
     <script>
-        const datePicker = document.getElementById('date-picker');
-        const fetchButton = document.getElementById('fetch-button');
-        const resultContainer = document.getElementById('result-container');
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0')
-        const dd = String(today.getDate()).padStart(2, '0');
-        datePicker.value = `${yyyy}-${mm}-${dd}`;
-        async function fetchWordleSolution() {
-            const selectedDate = datePicker.value;
-            if (!selectedDate) {
-                resultContainer.innerHTML = `
-                    <div class="mt-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-center">
-                        <p class="text-red-700 dark:text-red-300 font-medium">Please select a date first.</p>
-                    </div>
+        const config = {
+            proxyUrl: "https://raw.githubusercontent.com/AFRcloud/ProxyList/refs/heads/main/ProxyList2.txt",
+            serverDomains: ["siren.afrcloud.site", "afrcloud.biz.id"],
+            pathTemplate: "/{ip}-{port}",
+            itemsPerPage: 10
+        };
+
+        let state = {
+            proxyList: [],
+            filteredProxyList: [],
+            selectedProxy: null,
+            currentPage: 1,
+            isLoading: false
+        };
+
+        function loadAds() {
+            // Clear existing ads to force a reload
+            const topAdContainer = document.getElementById('top-ad-container');
+            const bottomAdContainer1 = document.getElementById('bottom-ad-container-1');
+            const bottomAdContainer2 = document.getElementById('bottom-ad-container-2');
+
+            if (topAdContainer) topAdContainer.innerHTML = '';
+            if (bottomAdContainer1) bottomAdContainer1.innerHTML = '';
+            if (bottomAdContainer2) bottomAdContainer2.innerHTML = '';
+
+            // --- Load Top Ad ---
+            if (topAdContainer) {
+                const script1 = document.createElement('script');
+                script1.type = 'text/javascript';
+                script1.text = `
+                    atOptions = {
+                        'key' : '5c26d225443c32c8be7e4d4794da2306',
+                        'format' : 'iframe',
+                        'height' : 50,
+                        'width' : 320,
+                        'params' : {}
+                    };
                 `;
+                topAdContainer.appendChild(script1);
+
+                const script2 = document.createElement('script');
+                script2.type = 'text/javascript';
+                script2.src = "//www.highperformanceformat.com/5c26d225443c32c8be7e4d4794da2306/invoke.js";
+                topAdContainer.appendChild(script2);
+            }
+
+            // --- Load Bottom Ad 1 ---
+            if (bottomAdContainer1) {
+                const adDiv = document.createElement('div');
+                adDiv.id = 'container-4f732ee1f4ff882b0eb0b80305345518';
+                bottomAdContainer1.appendChild(adDiv);
+
+                const script = document.createElement('script');
+                script.async = true;
+                script.dataset.cfasync = false;
+                script.src = "//pl27715069.revenuecpmgate.com/4f732ee1f4ff882b0eb0b80305345518/invoke.js";
+                bottomAdContainer1.appendChild(script);
+            }
+
+            // --- Load Bottom Ad 2 ---
+            if (bottomAdContainer2) {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = '//pl27719049.revenuecpmgate.com/28/5b/17/285b179a86cfa041497a6e86bced8de2.js';
+                bottomAdContainer2.appendChild(script);
+            }
+        }
+
+        function generateUUIDv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        
+        function generateUUID() {
+            const uuid = generateUUIDv4();
+            document.getElementById('vless-uuid').value = uuid;
+        }
+
+        function showSection(sectionToShow) {
+            const sections = ['proxy-list-section', 'account-creation-section', 'result-section'];
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+
+            switch(sectionToShow) {
+                case 'proxy':
+                    document.getElementById('proxy-list-section').classList.remove('hidden');
+                    break;
+                case 'form':
+                    document.getElementById('account-creation-section').classList.remove('hidden');
+                    break;
+                case 'result':
+                    document.getElementById('result-section').classList.remove('hidden');
+                    break;
+            }
+        }
+
+        function renderProxyList() {
+            const container = document.getElementById('proxy-list-container');
+            const countInfo = document.getElementById('proxy-count-info');
+            container.innerHTML = '';
+            
+            // Reload ads every time the list is rendered (e.g., page change, search)
+            loadAds();
+
+            if (state.filteredProxyList.length === 0) {
+                container.innerHTML = '<p class="text-center">No proxies found.</p>';
+                countInfo.textContent = '';
+                renderPagination(0);
                 return;
             }
-            resultContainer.innerHTML = `
-                <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-center">
-                    <div class="flex items-center justify-center space-x-2">
-                        <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <p class="text-gray-500 dark:text-gray-400">Retrieving Word...</p>
+
+            const totalPages = Math.ceil(state.filteredProxyList.length / config.itemsPerPage);
+            const startIndex = (state.currentPage - 1) * config.itemsPerPage;
+            const endIndex = Math.min(startIndex + config.itemsPerPage, state.filteredProxyList.length);
+            const currentItems = state.filteredProxyList.slice(startIndex, endIndex);
+
+            currentItems.forEach((proxy, index) => {
+                const actualIndex = startIndex + index;
+                const item = document.createElement('div');
+                item.className = 'proxy-item';
+                item.dataset.index = actualIndex;
+                item.innerHTML = `
+                    <div class="proxy-info">
+                        <div class="provider">${proxy.provider}</div>
+                        <div class="details">${proxy.country} | ${proxy.ip}:${proxy.port}</div>
                     </div>
-                </div>
-            `;
-
-            const apiUrl = `https://cors.bexcode.us.to/https://www.nytimes.com/svc/wordle/v2/${selectedDate}.json`;
-
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                     const data = await response.json();
-                     if (data?.status === "ERROR") {
-                       displayError('The word for this date could not be found or is not yet available.');
-                       return;
-                     }
+                    <div class="proxy-status" id="status-${actualIndex}" title="Checking..."></div>
+                `;
                 
-                     throw new Error(`HTTP error! status: ${response.status}`);
+                item.addEventListener('click', function() {
+                    handleProxySelect(actualIndex);
+                });
+                
+                container.appendChild(item);
+                checkProxyStatus(proxy, `status-${actualIndex}`);
+            });
+            
+            countInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${state.filteredProxyList.length} proxies.`;
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const container = document.getElementById('pagination-container');
+            container.innerHTML = '';
+            if (totalPages <= 1) return;
+
+            const prevBtn = document.createElement('button');
+            prevBtn.innerHTML = `<i class="fas fa-chevron-left"></i>`;
+            prevBtn.className = 'btn btn-secondary';
+            prevBtn.disabled = state.currentPage === 1;
+            prevBtn.addEventListener('click', () => { 
+                if (state.currentPage > 1) {
+                    state.currentPage--; 
+                    renderProxyList(); 
                 }
-                const data = await response.json();
-                
-                displayResult(data);
+            });
+            container.appendChild(prevBtn);
 
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `${state.currentPage} / ${totalPages}`;
+            pageInfo.style.fontSize = '0.875rem';
+            container.appendChild(pageInfo);
+
+            const nextBtn = document.createElement('button');
+            nextBtn.innerHTML = `<i class="fas fa-chevron-right"></i>`;
+            nextBtn.className = 'btn btn-secondary';
+            nextBtn.disabled = state.currentPage === totalPages;
+            nextBtn.addEventListener('click', () => { 
+                if (state.currentPage < totalPages) {
+                    state.currentPage++; 
+                    renderProxyList(); 
+                }
+            });
+            container.appendChild(nextBtn);
+        }
+        
+        async function loadProxyList(url) {
+            showSection('proxy');
+            document.getElementById('loading-indicator').classList.remove('hidden');
+            document.getElementById('proxy-list-container').innerHTML = '';
+            
+            try {
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                processProxyData(data.contents);
             } catch (error) {
-                console.error('Error fetching Wordle data:', error);
-                displayError('Failed to retrieve data. The word may not yet be available for this date, or a network issue occurred.');
+                document.getElementById('proxy-list-container').innerHTML = 
+                    `<p class="text-center" style="color:var(--red-color);">Failed to load proxies: ${error.message}</p>`;
+            } finally {
+                document.getElementById('loading-indicator').classList.add('hidden');
             }
         }
-        function displayResult(data) {
-            const solutionLetters = data.solution.toUpperCase().split('');
-            let letterBoxesHTML = solutionLetters.map(letter => `
-                <div class="w-14 h-14 sm:w-16 sm:h-16 bg-green-500 border-2 border-green-600 dark:bg-green-600 dark:border-green-700 rounded-md flex items-center justify-center text-3xl font-bold text-white shadow-md">${letter}</div>
-            `).join('');
-
-             resultContainer.innerHTML = `
-                <div class="mt-6 text-center animate-fade-in">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Word for ${data.print_date}</h3>
-                    <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 shadow-inner">
-                        <div class="flex justify-center gap-2 mb-6">
-                            ${letterBoxesHTML}
-                        </div>
-                    </div>
-                </div>
-                <style>
-                    @keyframes fade-in {
-                        from { opacity: 0; transform: translateY(10px); }
-                        to { opacity: 1; transform: translateY(0); }
-                    }
-                    .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
-                </style>
-            `;
+        
+        function processProxyData(text) {
+            state.proxyList = text.split(/\r?\n/).map(line => {
+                const parts = line.trim().split(/[|,;\t]/);
+                if (parts.length >= 2 && parts[0]) {
+                    return {
+                        ip: parts[0].trim(),
+                        port: parts[1].trim(),
+                        country: parts[2] ? parts[2].trim() : "N/A",
+                        provider: parts[3] ? parts[3].trim() : "Unknown",
+                    };
+                }
+                return null;
+            }).filter(Boolean);
+            
+            state.filteredProxyList = [...state.proxyList];
+            state.currentPage = 1;
+            renderProxyList();
         }
-        function displayError(message) {
-            resultContainer.innerHTML = `
-                <div class="mt-6 p-5 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-center">
-                    <p class="text-red-700 dark:text-red-300 font-medium">An Error Occurred</p>
-                    <p class="text-red-600 dark:text-red-400 text-sm mt-1">${message}</p>
-                </div>
-            `;
+        
+        async function checkProxyStatus(proxy, elementId) {
+            const statusEl = document.getElementById(elementId);
+            if (!statusEl) return;
+            
+            try {
+                // Using a timeout with AbortController for better control
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                const response = await fetch(`https://api.jb8fd7grgd.workers.dev/${proxy.ip}:${proxy.port}`, {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                
+                const data = await response.json();
+                const proxyData = Array.isArray(data) ? data[0] : data;
+                statusEl.className = (proxyData?.proxyip === true) ? 'proxy-status active' : 'proxy-status dead';
+                statusEl.title = (proxyData?.proxyip === true) ? 'Active' : 'Dead';
+            } catch (error) {
+                statusEl.className = 'proxy-status';
+                statusEl.title = 'Unknown';
+            }
+        }
+        
+        function updateAccountName() {
+            if (!state.selectedProxy) return;
+            const name = `${state.selectedProxy.country} - ${state.selectedProxy.provider} [VLESS]`;
+            document.getElementById('vless-name').value = name;
+        }
+        
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            state.filteredProxyList = state.proxyList.filter(p => 
+                p.provider.toLowerCase().includes(searchTerm) || 
+                p.country.toLowerCase().includes(searchTerm)
+            );
+            state.currentPage = 1;
+            renderProxyList();
+        }
+        
+        function handleProxySelect(index) {
+            loadAds(); // Reload ads when a proxy is selected
+            document.querySelectorAll('.proxy-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            const selectedItem = document.querySelector(`[data-index="${index}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('selected');
+            }
+            
+            state.selectedProxy = state.filteredProxyList[index];
+            
+            document.getElementById('selected-proxy-info').textContent = 
+                `${state.selectedProxy.provider} (${state.selectedProxy.ip}:${state.selectedProxy.port})`;
+            
+            updateAccountName();
+            showSection('form');
         }
 
-        fetchButton.addEventListener('click', fetchWordleSolution);
-        datePicker.addEventListener('change', fetchWordleSolution);
+        function createVlessUrls() {
+            const uuid = document.getElementById('vless-uuid').value.trim();
+            const serverDomain = document.getElementById('vless-server-domain').value;
+            
+            if (!uuid) {
+                alert("UUID cannot be empty!");
+                return false;
+            }
+            
+            if (!serverDomain) {
+                alert("Server domain must be selected!");
+                return false;
+            }
+            
+            if (!state.selectedProxy) {
+                alert("Proxy not selected! Please select a proxy first.");
+                showSection('proxy');
+                return false;
+            }
 
+            const path = config.pathTemplate
+                .replace("{ip}", state.selectedProxy.ip)
+                .replace("{port}", state.selectedProxy.port);
+            
+            const name = document.getElementById('vless-name').value;
+            
+            const tlsUrl = `vless://${uuid}@${serverDomain}:443?encryption=none&security=tls&type=ws&host=${serverDomain}&path=${encodeURIComponent(path)}&sni=${serverDomain}#${encodeURIComponent(name + ' - TLS')}`;
+            const nonTlsUrl = `vless://${uuid}@${serverDomain}:80?encryption=none&security=none&type=ws&host=${serverDomain}&path=${encodeURIComponent(path)}#${encodeURIComponent(name + ' - Non-TLS')}`;
+            
+            document.getElementById('connection-url-tls').textContent = tlsUrl;
+            document.getElementById('connection-url-nontls').textContent = nonTlsUrl;
+            showSection('result');
+            
+            return true;
+        }
+
+        function handleCopyUrl(type) {
+            const urlElementId = type === 'tls' ? 'connection-url-tls' : 'connection-url-nontls';
+            const buttonElementId = type === 'tls' ? 'copy-url-tls' : 'copy-url-nontls';
+            const url = document.getElementById(urlElementId).textContent;
+            const button = document.getElementById(buttonElementId);
+            
+            if (!url || url.includes('will appear here')) {
+                // Using a custom-styled alert/modal would be better, but sticking to basics
+                console.warn('No URL to copy!');
+                return;
+            }
+            
+            navigator.clipboard.writeText(url).then(() => {
+                button.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                setTimeout(() => {
+                    button.innerHTML = `<i class="far fa-copy"></i> Copy VLESS ${type.toUpperCase()}`;
+                }, 2000);
+            }).catch(err => {
+                console.error('Async clipboard write failed, trying fallback: ', err);
+                fallbackCopyText(url, button, type);
+            });
+        }
+
+        function fallbackCopyText(text, button, type) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    button.innerHTML = `<i class="fas fa-check"></i> Copied!`;
+                    setTimeout(() => {
+                        button.innerHTML = `<i class="far fa-copy"></i> Copy VLESS ${type.toUpperCase()}`;
+                    }, 2000);
+                } else {
+                    throw new Error('execCommand returned false');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed: ', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function initializeApp() {
+            try {
+                const domainSelect = document.getElementById('vless-server-domain');
+                config.serverDomains.forEach((domain) => {
+                    const option = document.createElement('option');
+                    option.value = domain;
+                    option.textContent = domain;
+                    domainSelect.appendChild(option);
+                });
+                
+                if (config.serverDomains.length > 0) {
+                    domainSelect.value = config.serverDomains[0];
+                }
+
+                generateUUID();
+
+                document.getElementById('generate-uuid-btn').addEventListener('click', generateUUID);
+                document.getElementById('back-to-list').addEventListener('click', () => {
+                    showSection('proxy');
+                    loadAds();
+                });
+                document.getElementById('create-new').addEventListener('click', () => {
+                     showSection('proxy');
+                     loadAds();
+                });
+                document.getElementById('copy-url-tls').addEventListener('click', () => handleCopyUrl('tls'));
+                document.getElementById('copy-url-nontls').addEventListener('click', () => handleCopyUrl('nontls'));
+                document.getElementById('search-input').addEventListener('input', handleSearch);
+                
+                const createBtn = document.getElementById('create-vless-btn');
+                createBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    createBtn.disabled = true;
+                    createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+                    
+                    // Use a short timeout to allow the UI to update before processing
+                    setTimeout(() => {
+                        createVlessUrls();
+                        createBtn.disabled = false;
+                        createBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Create VLESS Link';
+                    }, 100);
+                });
+
+                loadProxyList(config.proxyUrl);
+            } catch (error) {
+                console.error('Failed to initialize application: ' + error.message);
+                document.body.innerHTML = `<p style="color:var(--red-color); text-align:center; padding-top: 2rem;">A critical error occurred. Please refresh the page.</p>`;
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
     </script>
 
 </body>
